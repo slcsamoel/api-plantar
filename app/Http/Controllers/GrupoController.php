@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Grupo;
 
 class GrupoController extends Controller
 {
@@ -13,19 +14,19 @@ class GrupoController extends Controller
      */
     public function index()
     {
+        try {
 
-        return response('aqui', 200);
+            $grupos = Grupo::all();
+            return response($grupos, 200);
+
+
+        } catch (\Throwable $th) {
+
+            return response($th->getMessage(), 500);
+        }
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +36,26 @@ class GrupoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        try {
+
+            $date = $this->validate($request,[
+                'nome' => 'required|max:255',
+                'descricao' => 'required|max:255'
+            ]);
+
+            $grupo = Grupo::query()->firstOrCreate($date);
+
+            return response($grupo , 200);
+
+
+        } catch (\Throwable $th) {
+
+            return response($th , 500);
+
+        }
+
+
     }
 
     /**
@@ -44,9 +64,14 @@ class GrupoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Grupo $grupo)
     {
-        //
+        try {
+            return response($grupo, 200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+
     }
 
 
@@ -57,9 +82,27 @@ class GrupoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Grupo $grupo)
     {
-        //
+
+            try {
+
+                $date = $this->validate($request,[
+                    'nome' => 'required|max:255',
+                    'descricao' => 'required|max:255'
+                ]);
+
+                $update = $grupo->update($date);
+
+                return $update ? response($grupo , 200) : response(null,400);
+
+            } catch (\Throwable $th) {
+
+                return response($th , 500);
+
+            }
+
+
     }
 
     /**
@@ -68,8 +111,17 @@ class GrupoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Grupo $grupo)
     {
-        //
+
+      try {
+
+            $grupo->delete();
+            return response(null, 204);
+
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+
     }
 }
