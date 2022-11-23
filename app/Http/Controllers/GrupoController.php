@@ -16,7 +16,7 @@ class GrupoController extends Controller
     {
         try {
 
-            $grupos = Grupo::all();
+            $grupos = Grupo::with('cidades' , 'campanhas')->get();
             return response(
                     [
                      'status' => 'success',
@@ -92,7 +92,7 @@ class GrupoController extends Controller
             return response(
                 [
                  'status' => 'success',
-                 'grupo' => $grupo
+                 'grupo' => $grupo->with('cidades')
                 ]
             , 202);
         } catch (\Throwable $th) {

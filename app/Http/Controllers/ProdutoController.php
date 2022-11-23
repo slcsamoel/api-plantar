@@ -17,7 +17,7 @@ class ProdutoController extends Controller
 
         try {
 
-            $produtos = Produto::all();
+            $produtos = Produto::with('produtoCampanhas')->get();
 
             return response(
                 [

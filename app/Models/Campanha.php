@@ -18,7 +18,7 @@ class Campanha extends Model
 
     public function campanhaProdutos()
     {
-        return $this->hasMany(campanhaProdutos::class);
+        return $this->belongsToMany(Produto::class , 'campanha_produtos' , 'campanha_id' , 'produto_id')->withTimestamps()->withPivot('preco');
     }
 
 }

@@ -97,11 +97,30 @@ class CidadeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Cidade $cidade)
     {
 
+            try {
+
+                return response(
+                    [
+                     'status' => 'success',
+                     'cidade' => $cidade->with('grupo')
+                    ]
+                    , 200);
 
 
+           } catch (\Throwable $th) {
+
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+            ,500);
+
+           }
 
     }
 
@@ -114,9 +133,58 @@ class CidadeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cidade $cidade)
     {
-        //
+            try {
+
+                $date = $this->validate($request,[
+                    'grupo_id' => 'required|numeric',
+                    'nome'  => 'required|max:255'
+                ]);
+
+                $grupo =  Grupo::find($request->grupo_id);
+
+                if(!$grupo){
+                    return response(
+                               [
+                                 'status' => 'error',
+                                 'messege'=>"o Grupo não existe"
+                               ]
+                               , 400);
+                }
+
+                $update = $cidade->update($date);
+
+                return $update
+                ?
+                 response(
+                    [
+                    'status' => 'success',
+                    'cidade' => $cidade
+                    ]
+                , 200)
+                :
+                response(
+                    [
+                        'status' => 'error',
+                        'message' => 'erro ao altera'
+                    ]
+                ,400);
+
+
+            } catch (\Throwable $th) {
+
+                return response(
+                    [
+                      'status' => 'error',
+                      'messege'=> $th->getMessage()
+                    ]
+
+               ,500);
+
+            }
+
+
     }
 
     /**
@@ -125,8 +193,29 @@ class CidadeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cidade $cidade)
     {
-        //
+
+        try {
+              $cidade->delete();
+              return response(
+                [
+                'status'=>'success',
+                'message'=> 'Excluido com sucesso!'
+                ]
+            , 204);
+
+        } catch (\Throwable $th) {
+
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
+
+        }
+
     }
 }
