@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\CidadeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::apiResource('grupos', GrupoController::class);
+
+Route::apiResource('produtos', ProdutoController::class);
+
+Route::apiResource('cidades', CidadeController::class);

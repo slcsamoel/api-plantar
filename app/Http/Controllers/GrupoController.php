@@ -17,12 +17,23 @@ class GrupoController extends Controller
         try {
 
             $grupos = Grupo::all();
-            return response($grupos, 200);
+            return response(
+                    [
+                     'status' => 'success',
+                     'grupos' => $grupos
+                    ]
+                , 200);
 
 
         } catch (\Throwable $th) {
 
-            return response($th->getMessage(), 500);
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
         }
 
     }
@@ -46,12 +57,23 @@ class GrupoController extends Controller
 
             $grupo = Grupo::query()->firstOrCreate($date);
 
-            return response($grupo , 200);
+            return response(
+                [
+                 'status' => 'success',
+                 'grupo' => $grupo
+                ]
+            , 201);
 
 
         } catch (\Throwable $th) {
 
-            return response($th , 500);
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
 
         }
 
@@ -67,9 +89,20 @@ class GrupoController extends Controller
     public function show(Grupo $grupo)
     {
         try {
-            return response($grupo, 200);
+            return response(
+                [
+                 'status' => 'success',
+                 'grupo' => $grupo
+                ]
+            , 202);
         } catch (\Throwable $th) {
-            return response($th, 500);
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
         }
 
     }
@@ -94,11 +127,31 @@ class GrupoController extends Controller
 
                 $update = $grupo->update($date);
 
-                return $update ? response($grupo , 200) : response(null,400);
+                return $update
+                        ?
+
+                        response(
+                        [
+                        'status' => 'success',
+                        'grupo' => $grupo
+                        ], 202)
+
+                        : response(
+                        [
+                         'status ' => 'error',
+                         'messege' => 'Error ao Alterar'
+                        ]
+                        ,400);
 
             } catch (\Throwable $th) {
 
-                return response($th , 500);
+                return response(
+                    [
+                      'status' => 'error',
+                      'messege'=> $th->getMessage()
+                    ]
+
+                ,500);
 
             }
 
@@ -117,10 +170,21 @@ class GrupoController extends Controller
       try {
 
             $grupo->delete();
-            return response(null, 204);
+            return response(
+                    [
+                    'status'=>'success',
+                    'message'=> 'Excluido com sucesso!'
+                    ]
+                , 204);
 
         } catch (\Throwable $th) {
-            return response($th, 500);
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+            ,500);
         }
 
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produto;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
@@ -13,18 +14,33 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        //
+
+        try {
+
+            $produtos = Produto::all();
+
+            return response(
+                [
+                 'status' => 'success',
+                 'produtos' => $produtos
+                ]
+                , 200);
+
+
+        }catch (\Throwable $th) {
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
+        }
+
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +50,36 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $date = $this->validate($request,[
+                'nome' => 'required|max:255',
+                'descricao' => 'required|max:255',
+                'preco' => 'required|numeric'
+            ]);
+
+            $produto = Produto::query()->firstOrCreate($date);
+
+            return response(
+                [
+                 'status' => 'success',
+                 'produtos' => $produto
+                ]
+                , 201);
+
+        } catch (\Throwable $th) {
+
+            return response(
+                [
+                  'status' => 'error',
+                  'messege' => $th->getMessage()
+                ]
+
+          ,500);
+
+        }
+
+
     }
 
     /**
@@ -43,21 +88,30 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Produto $produto)
     {
-        //
+        try {
+
+            return response(
+                [
+                 'status' => 'success',
+                 'produtos' => $produto
+                ]
+                , 200);
+
+        } catch (\Throwable $th) {
+        return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
+
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -66,9 +120,46 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Produto $produto)
     {
-        //
+          try {
+
+            $date = $this->validate($request,[
+                'nome' => 'required|max:255',
+                'descricao' => 'required|max:255',
+                'preco' => 'required|numeric'
+            ]);
+
+            $update = $produto->update($date);
+
+            return $update
+                ?
+                 response(
+                    [
+                    'status' => 'success',
+                    'produtos' => $produto
+                    ]
+                , 200)
+                :
+                response(
+                    [
+                        'status' => 'error',
+                        'message' => 'erro ao altera'
+                    ]
+                ,400);
+
+          } catch (\Throwable $th) {
+
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+           ,500);
+
+          }
+
     }
 
     /**
@@ -77,8 +168,29 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Produto $produto)
     {
-        //
+
+        try {
+
+            $produto->delete();
+            return response(
+                [
+                'status'=>'success',
+                'message'=> 'Excluido com sucesso!'
+                ]
+            , 204);
+
+        } catch (\Throwable $th) {
+
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
+        }
+
     }
 }

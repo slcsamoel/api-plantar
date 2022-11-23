@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cidade;
+use App\Models\Grupo;
 use Illuminate\Http\Request;
 
 class CidadeController extends Controller
@@ -13,18 +15,30 @@ class CidadeController extends Controller
      */
     public function index()
     {
-        //
+        try {
+
+            $cidades = Cidade::with('grupo')->get();
+
+            return response(
+                    [
+                    'status' => 'success',
+                    'cidades' => $cidades
+                    ]
+                    , 200);
+
+        } catch (\Throwable $th) {
+            return response(
+                [
+                  'status' => 'error',
+                  'messege'=> $th->getMessage()
+                ]
+
+          ,500);
+        }
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +48,47 @@ class CidadeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        try {
+
+            $date = $this->validate($request,[
+                'grupo_id' => 'required|numeric',
+                'nome'  => 'required|max:255'
+            ]);
+
+            $grupo =  Grupo::find($request->grupo_id);
+
+            if(!$grupo){
+                return response(
+                           [
+                             'status' => 'error',
+                             'messege'=>"o Grupo não existe"
+                           ]
+                           , 400);
+            }
+
+            $cidade = Cidade::query()->firstOrCreate($date);
+
+            return response(
+                [
+                  'status' => 'success',
+                  'cidade'=> $cidade
+                ]
+                , 201);
+
+
+        } catch (\Throwable $th) {
+
+            return response(
+                      [
+                        'status' => 'error',
+                        'messege'=> $th->getMessage()
+                      ]
+
+                ,500);
+        }
+
+
     }
 
     /**
@@ -45,19 +99,13 @@ class CidadeController extends Controller
      */
     public function show($id)
     {
-        //
+
+
+
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
