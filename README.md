@@ -37,3 +37,6 @@ composer install --ignore-platform-reqs
    [PUT]   /produtos/{produto} (Alterar um produto)
    [DELETE] /produtos/{produto} (Deletar um Produto)
    [POST]   /vincular-produtos/{campanha}/{produto} (Vincular um Produto a uma campanha)
+
+
+## DER.png (Diagrama de entidade Relacional)
